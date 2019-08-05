@@ -62,10 +62,10 @@ class Command
 // List of all commands Command name - Callback, Arg Count, Usage string, Description
 const g_Commands = [new Command('gm-help',     CmdHelp,               0, `${COMMAND_PREFIX}gm-help`,                                                   'Show command list'),
                     new Command('gm-create',   CmdCreateTeam,         3, `${COMMAND_PREFIX}gm-create <team-name> <rank-tier(iron-challenger)> <role>`, 'Create a new team'),
-					new Command('gm-join',     CmdJoinTeam,           2, `${COMMAND_PREFIX}gm-join <team-name> <role>`,                                'Join an existing team (top, jungle, mid, adc, support)'),  
+                    new Command('gm-join',     CmdJoinTeam,           2, `${COMMAND_PREFIX}gm-join <team-name> <role>`,                                'Join an existing team (top, jungle, mid, adc, support)'),  
                     new Command('gm-list',     CmdTeamList,           0, `${COMMAND_PREFIX}gm-list`,                                                   'Show all current teams'),
-					new Command('gm-leave',    CmdLeaveTeam,          0, `${COMMAND_PREFIX}gm-leave`,                                                  'Leave existing team'),
-					new Command('gm-transfer', CmdTransferOwnership,  1, `${COMMAND_PREFIX}gm-transfer <player>`,                                      'Transfer ownership to another player within the same team')]
+                    new Command('gm-leave',    CmdLeaveTeam,          0, `${COMMAND_PREFIX}gm-leave`,                                                  'Leave existing team'),
+                    new Command('gm-transfer', CmdTransferOwnership,  1, `${COMMAND_PREFIX}gm-transfer <player>`,                                      'Transfer ownership to another player within the same team')]
 
 /**
  * gm-help command callback
