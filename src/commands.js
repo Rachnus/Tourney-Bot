@@ -68,8 +68,8 @@ const g_Commands = [new Command('gm-help',     CmdHelp,               0, `${COMM
                     new Command('gm-transfer', CmdTransferOwnership,  1, `${COMMAND_PREFIX}gm-transfer <player>`,                                      'Transfer ownership to another player within the same team'),
                     new Command('gm-team',     CmdTeamInfo,           0, `${COMMAND_PREFIX}gm-team <team-name(optional)>`,                             'Check what players are in a team and their roles'),
                     new Command('gm-kick',     CmdKickPlayer,         1, `${COMMAND_PREFIX}gm-kick <player>`,                                          'Kick player from team'),
-				    new Command('gm-ban',      CmdBanPlayer,          1, `${COMMAND_PREFIX}gm-ban <player>`,                                           'Ban player from team'),
-				    new Command('gm-unban',    CmdUnbanPlayer,        1, `${COMMAND_PREFIX}gm-unban <player>`,                                         'Unban player from team')]
+                    new Command('gm-ban',      CmdBanPlayer,          1, `${COMMAND_PREFIX}gm-ban <player>`,                                           'Ban player from team'),
+                    new Command('gm-unban',    CmdUnbanPlayer,        1, `${COMMAND_PREFIX}gm-unban <player>`,                                         'Unban player from team')]
 
 /**
  * gm-help command callback
