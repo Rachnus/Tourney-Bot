@@ -22,7 +22,7 @@ function RoleNameToRoleId(role_name)
 {
 	for(var i = 0; i < ROLE_NAMES.length; i++)
 	{
-		if(role_name === ROLE_NAMES[i])
+		if(role_name.toLowerCase() === ROLE_NAMES[i])
 			return i;
 	}
 	return -1;
@@ -49,7 +49,7 @@ function IsValidRoleName(role_name)
 {
 	for(var i = 0; i < ROLE_NAMES.length; i++)
 	{
-		if(ROLE_NAMES[i] === role_name)
+		if(ROLE_NAMES[i] === role_name.toLowerCase())
 			return true;
 	}
 	return false;

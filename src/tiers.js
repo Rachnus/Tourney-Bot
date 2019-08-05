@@ -10,7 +10,7 @@ function IsValidTier(tier)
 {
 	for(var i = 0; i < TIERS.length; i++)
 	{
-		if(tier === TIERS[i])
+		if(tier.toLowerCase() === TIERS[i])
 			return true;
 	}
 	return false;

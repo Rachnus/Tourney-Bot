@@ -3,6 +3,7 @@ const Player       = require('./player.js');
 const Tiers        = require('./tiers.js');
 const Team         = require('./team.js');
 const Role         = require('./role.js');
+const LeagueRole   = require('./leaguerole.js');
 
 const COMMAND_PREFIX = '!'
 
@@ -60,16 +61,19 @@ class Command
 }
 
 // List of all commands Command name - Callback, Arg Count, Usage string, Description
-const g_Commands = [new Command('gm-help',     CmdHelp,               0, `${COMMAND_PREFIX}gm-help`,                                                   'Show command list'),
-                    new Command('gm-create',   CmdCreateTeam,         3, `${COMMAND_PREFIX}gm-create <team-name> <rank-tier(iron-challenger)> <role>`, 'Create a new team'),
-                    new Command('gm-join',     CmdJoinTeam,           2, `${COMMAND_PREFIX}gm-join <team-name> <role>`,                                'Join an existing team (top, jungle, mid, adc, support)'),
-                    new Command('gm-list',     CmdTeamList,           0, `${COMMAND_PREFIX}gm-list`,                                                   'Show all current teams'),
-                    new Command('gm-leave',    CmdLeaveTeam,          0, `${COMMAND_PREFIX}gm-leave`,                                                  'Leave existing team'),
-                    new Command('gm-transfer', CmdTransferOwnership,  1, `${COMMAND_PREFIX}gm-transfer <player>`,                                      'Transfer ownership to another player within the same team'),
-                    new Command('gm-team',     CmdTeamInfo,           0, `${COMMAND_PREFIX}gm-team <team-name(optional)>`,                             'Check what players are in a team and their roles'),
-                    new Command('gm-kick',     CmdKickPlayer,         1, `${COMMAND_PREFIX}gm-kick <player>`,                                          'Kick player from team'),
-                    new Command('gm-ban',      CmdBanPlayer,          1, `${COMMAND_PREFIX}gm-ban <player>`,                                           'Ban player from team'),
-                    new Command('gm-unban',    CmdUnbanPlayer,        1, `${COMMAND_PREFIX}gm-unban <player>`,                                         'Unban player from team')]
+const g_Commands = [new Command('gm-help',        CmdHelp,               0, `${COMMAND_PREFIX}gm-help`,                                                   'Show command list'),
+                    new Command('gm-create',      CmdCreateTeam,         3, `${COMMAND_PREFIX}gm-create <team-name> <rank-tier(iron-challenger)> <role>`, 'Create a new team'),
+                    new Command('gm-join',        CmdJoinTeam,           2, `${COMMAND_PREFIX}gm-join <team-name> <role>`,                                'Join an existing team (top, jungle, mid, adc, support)'),
+                    new Command('gm-list',        CmdTeamList,           0, `${COMMAND_PREFIX}gm-list`,                                                   'Show all current teams'),
+                    new Command('gm-leave',       CmdLeaveTeam,          0, `${COMMAND_PREFIX}gm-leave`,                                                  'Leave existing team'),
+                    new Command('gm-transfer',    CmdTransferOwnership,  1, `${COMMAND_PREFIX}gm-transfer <player>`,                                      'Transfer ownership to another player within the same team'),
+                    new Command('gm-team',        CmdTeamInfo,           0, `${COMMAND_PREFIX}gm-team <team-name(optional)>`,                             'Check what players are in a team and their roles'),
+                    new Command('gm-kick',        CmdKickPlayer,         1, `${COMMAND_PREFIX}gm-kick <player>`,                                          'Kick player from team'),
+                    new Command('gm-ban',         CmdBanPlayer,          1, `${COMMAND_PREFIX}gm-ban <player>`,                                           'Ban player from team'),
+                    new Command('gm-unban',       CmdUnbanPlayer,        1, `${COMMAND_PREFIX}gm-unban <player>`,                                         'Unban player from team'),
+
+                    new Command('gm-addrole',     CmdAddRole,            1, `${COMMAND_PREFIX}gm-addrole <role/lane>`,                                    'Add discord lane role'),
+                    new Command('gm-removerole',  CmdRemoveRole,         1, `${COMMAND_PREFIX}gm-removerole <role/lane>`,                                 'Remove discord lane role')]
 
 /**
  * gm-help command callback
@@ -558,6 +562,84 @@ function CmdUnbanPlayer(bot, msg, command, args)
 	}
 
 	msg.channel.send(`${msg.author}\n${playerTarget.getDiscordUser()} was unbanned from ${teamName}`);
+	return true;
+}
+
+/**
+ * gm-addrole command callback
+ *
+ * @param bot            bot client
+ * @param msg            message object
+ * @param command        command name
+ * @param args           array of arguments
+ * @return void
+ */
+function CmdAddRole(bot, msg, command, args)
+{
+	var roleName = args[0];
+
+	var playerOwner = Player.GetGlobalPlayerByUser(msg.author);
+
+	if(!Role.IsValidRoleName(roleName))
+	{
+		msg.channel.send(`${msg.author}\nInvalid role '${roleName}'`);
+		return false;
+	}
+
+	// Translate the role name to start with capital letter and rest lower case
+	roleName = LeagueRole.FixDiscordLaneRole(roleName);
+
+	var role = msg.guild.roles.find(role => role.name === roleName);
+	if(msg.member.roles.has(role.id))
+	{
+		// User has role
+		msg.channel.send(`${msg.author}\nYou already have the role '${roleName}'`);
+		return false;
+	}
+
+	// User does not have role
+	msg.member.addRole(role);
+
+	msg.channel.send(`${msg.author}\nYou now have role '${roleName}'`);
+	return true;
+}
+
+/**
+ * gm-removerole command callback
+ *
+ * @param bot            bot client
+ * @param msg            message object
+ * @param command        command name
+ * @param args           array of arguments
+ * @return void
+ */
+function CmdRemoveRole(bot, msg, command, args)
+{
+	var roleName = args[0];
+
+	var playerOwner = Player.GetGlobalPlayerByUser(msg.author);
+
+	if(!Role.IsValidRoleName(roleName))
+	{
+		msg.channel.send(`${msg.author}\nInvalid role '${roleName}'`);
+		return false;
+	}
+
+	// Translate the role name to start with capital letter and rest lower case
+	roleName = LeagueRole.FixDiscordLaneRole(roleName);
+
+	var role = msg.guild.roles.find(role => role.name === roleName);
+	if(!msg.member.roles.has(role.id))
+	{
+		// User does not have the role
+		msg.channel.send(`${msg.author}\nYou do not have the role '${roleName}'`);
+		return false;
+	}
+
+	// User has the role
+	msg.member.removeRole(role);
+
+	msg.channel.send(`${msg.author}\nYou no longer have the role '${roleName}'`);
 	return true;
 }
 
