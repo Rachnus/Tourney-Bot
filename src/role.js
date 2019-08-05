@@ -1,6 +1,6 @@
 const ROLE_NAMES = ['top', 'jungle', 'mid', 'adc', 'support'];
 
-var ROLES = 
+var ROLES =
 {
 	INVALID: -1,
 	TOP: 0,
@@ -8,7 +8,7 @@ var ROLES =
 	MID: 2,
 	ADC: 3,
 	SUPPORT: 4,
-	
+
 	MAX_ROLES: 5
 };
 
@@ -66,11 +66,11 @@ function IsValidRoleId(role_id)
 	return role_id >= 0 && role_id < ROLES.MAX_ROLES;
 }
 
-module.exports = 
+module.exports =
 {
 	ROLE_NAMES:       ROLE_NAMES,
 	ROLES:            ROLES,
-	
+
 	RoleNameToRoleId: RoleNameToRoleId,
 	RoleIdToRoleName: RoleIdToRoleName,
 	IsValidRoleName:  IsValidRoleName,

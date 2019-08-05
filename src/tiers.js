@@ -16,7 +16,7 @@ function IsValidTier(tier)
 	return false;
 }
 
-module.exports = 
+module.exports =
 {
 	tiers: TIERS,
 	IsValidTier: IsValidTier

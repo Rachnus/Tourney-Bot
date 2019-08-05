@@ -28,7 +28,7 @@ class Player
 	{
 		return this.m_User;
 	}
-	
+
 	/**
 	 * Get players current team
 	 *
@@ -38,7 +38,7 @@ class Player
 	{
 		return this.m_CurrentTeam;
 	}
-	
+
 	/**
 	 * Set players current team
 	 *
@@ -49,7 +49,7 @@ class Player
 	{
 		this.m_CurrentTeam = team;
 	}
-	
+
 	/**
 	 * Get players id
 	 *
@@ -59,7 +59,7 @@ class Player
 	{
 		return this.m_PlayerID;
 	}
-	
+
 	/**
 	 * Set players current team
 	 *
@@ -81,17 +81,17 @@ class Player
 function GetGlobalPlayerByUser(discord_user)
 {
 	var index = FindPlayerByDiscordUser(discord_user);
-	
+
 	// Global player does not exist, add new
 	if(index == -1)
 	{
 		var player = new Player(discord_user);
 		player.setPID(g_Players.length);
-		
+
 		g_Players.push(player);
 		return g_Players[g_Players.length - 1];
 	}
-	
+
 	// Return existing player
 	return g_Players[index];
 }
@@ -105,11 +105,11 @@ function GetGlobalPlayerByUser(discord_user)
 function GetGlobalPlayerByName(discord_name)
 {
 	var index = FindPlayerByDiscordName(discord_name);
-	
+
 	// Global player does not exist
 	if(index == -1)
 		return null;
-	
+
 	// Return existing player
 	return g_Players[index];
 }
@@ -157,13 +157,13 @@ function FindPlayerByDiscordName(discord_name)
 	return -1;
 }
 
-module.exports = 
+module.exports =
 {
 	INVALID_PID:             INVALID_PID,
-	
+
 	players:                 g_Players,
 	Player,
-	
+
 	GetGlobalPlayerByUser:   GetGlobalPlayerByUser,
 	GetGlobalPlayerByPID:    GetGlobalPlayerByPID,
 	GetGlobalPlayerByName:   GetGlobalPlayerByName,

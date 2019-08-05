@@ -5,13 +5,13 @@ const bot = new Discord.Client();
 
 var callbacks = require('./callbacks.js');
 
-bot.on('ready', () => 
+bot.on('ready', () =>
 {
 	callbacks.OnBotReady(bot);
 });
- 
- 
-bot.on('message', msg => 
+
+
+bot.on('message', msg =>
 {
 	callbacks.OnClientMessage(bot, msg);
 })

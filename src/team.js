@@ -14,18 +14,19 @@ class Team
 	 */
 	constructor(name, tier)
 	{
-		this.m_szName  = name;
-		this.m_Tier    = tier;
-		this.m_Owner   = {};
-		
-		this.m_Roles   = new Array(Role.ROLES.MAX_ROLES);
-		
+		this.m_szName     = name;
+		this.m_Tier       = tier;
+		this.m_Owner      = {};
+
+		this.m_Roles      = new Array(Role.ROLES.MAX_ROLES);
+		this.m_BannedPID  = [];
+
 		for(var i = 0; i < Role.ROLES.MAX_ROLES; i++)
 		{
 			this.m_Roles[i] = Player.INVALID_PID;
 		}
 	}
-	
+
 	/**
 	 * Get team name
 	 *
@@ -35,7 +36,7 @@ class Team
 	{
 		return this.m_szName;
 	}
-	
+
 	/**
 	 * Get team tier
 	 *
@@ -45,7 +46,7 @@ class Team
 	{
 		return this.m_Tier;
 	}
-	
+
 	/**
 	 * Get team owner (player id)
 	 *
@@ -55,8 +56,8 @@ class Team
 	{
 		return this.m_Owner;
 	}
-	
-	
+
+
 	/**
 	 * Set team owner
 	 *
@@ -68,7 +69,7 @@ class Team
 		this.m_Owner = player_id;
 		Player.GetGlobalPlayerByPID(player_id).setCurrentTeam(this);
 	}
-	
+
 	/**
 	 * Find player object in team by player id
 	 *
@@ -81,13 +82,13 @@ class Team
 		{
 			if(this.m_Roles[i] == null)
 				continue;
-			
+
 			if(this.m_Roles[i] == player_id)
 				return i;
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Returns true if player exists in team
 	 *
@@ -98,7 +99,7 @@ class Team
 	{
 		return this.findPlayer(player_id) != -1;
 	}
-	
+
 	/**
 	 * Returns true if role id is taken
 	 *
@@ -109,7 +110,7 @@ class Team
 	{
 		return this.m_Roles[role_id] != -1;
 	}
-	
+
 	/**
 	 * Returns true if role name is taken
 	 *
@@ -121,7 +122,7 @@ class Team
 		var roleId = Role.RoleNameToRoleId(role_name);
 		return this.isRoleIdTaken(roleId);
 	}
-	
+
 	/**
 	 * Adds a player to the team or switch the role of a player by role id
 	 * returns true if valid role id
@@ -134,17 +135,17 @@ class Team
 	{
 		if(!Role.IsValidRoleId(role_id))
 			return false;
-		
+
 		// if the player we're setting the role for already has a role within this team, make sure to reset that role
 		var roleId = this.findPlayer(player_id);
 		if(roleId != -1)
 			this.m_Roles[roleId] = -1;
-		
+
 		Player.GetGlobalPlayerByPID(player_id).setCurrentTeam(this);
 		this.m_Roles[role_id] = player_id;
 		return true;
 	}
-	
+
 	/**
 	 * Adds a player to the team or switch the role of a player by role name
 	 * returns true if valid role name
@@ -157,11 +158,11 @@ class Team
 	{
 		if(!Role.IsValidRoleName(role_name))
 			return false;
-		
+
 		var roleId = Role.RoleNameToRoleId(role_name);
 		return this.setRoleById(player_id, roleId);
 	}
-	
+
 	/**
 	 * Gets player object by role id
 	 *
@@ -172,7 +173,7 @@ class Team
 	{
 		return Player.GetGlobalPlayerByPID(this.m_Roles[role_id]);
 	}
-	
+
 	/**
 	 * Gets player object by role name
 	 *
@@ -183,13 +184,13 @@ class Team
 	{
 		if(!Role.IsValidRoleName(role_name))
 			return false;
-		
+
 		var roleId = Role.RoleNameToRoleId(role_name);
 		return this.getPlayerByRoleId(roleId);
 	}
-	
+
 	/**
-	 * Kick a player from the team
+	 * Kicks a player from the team
 	 * returns true if a player with the player id was kicked
 	 *
 	 * @param player_id          player id
@@ -209,9 +210,64 @@ class Team
 		}
 		return ret;
 	}
-	
+
 	/**
-	 * Kicks all the players and disbands the team 
+	 * Returns if player id is banned
+	 *
+	 * @param player_id          player id
+	 * @return bool
+	 */
+	isBanned(player_id)
+	{
+		for(var i = 0; i < this.m_BannedPID.length; i++)
+		{
+			if(this.m_BannedPID[i] == player_id)
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Bans a player from the team
+	 * returns true if a player with the player id was banned
+	 *
+	 * @param player_id          player id
+	 * @return bool
+	 */
+	banPlayer(player_id)
+	{
+		if(this.isBanned(player_id))
+			return false;
+
+		// First kick the player
+		this.kickPlayer(player_id);
+		this.m_BannedPID.push(player_id);
+		return true;
+	}
+
+	/**
+	 * Unbans a player from the team
+	 * returns true if a player with the player id was unbanned
+	 *
+	 * @param player_id          player id
+	 * @return bool
+	 */
+	unbanPlayer(player_id)
+	{
+		for(var i = 0; i < this.m_BannedPID.length; i++)
+		{
+			if(this.m_BannedPID[i] == player_id)
+			{
+				this.m_BannedPID.splice(i, 1);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Kicks all the players and disbands the team
 	 *
 	 * @return void
 	 */
@@ -226,7 +282,7 @@ class Team
 			}
 		}
 	}
-	
+
 	/**
 	 * Gets the amount of players on the team
 	 *
@@ -244,7 +300,7 @@ class Team
 	}
 }
 
-module.exports = 
+module.exports =
 {
 	Team
 };

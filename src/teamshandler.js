@@ -24,7 +24,7 @@ function AddTeam(team)
 {
 	if(TeamExists(team.getName()))
 		return null;
-	
+
 	g_Teams.push(team);
 	return team;
 }
@@ -84,7 +84,7 @@ function TeamExists(team_name)
 }
 
 
-module.exports = 
+module.exports =
 {
 	CreateTeam:    CreateTeam,
 	AddTeam:       AddTeam,
@@ -92,5 +92,5 @@ module.exports =
 	FindTeam:      FindTeam,
 	TeamExists:    TeamExists,
 	teams:         g_Teams
-	
+
 };

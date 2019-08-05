@@ -22,7 +22,7 @@ function OnClientMessage(bot, msg)
 {
 	if(!msg.content.startsWith(Commands.COMMAND_PREFIX) || msg.author.bot)
 		return;
-	
+
 	const args = msg.content.slice(Commands.COMMAND_PREFIX.length).split(' ');
 	const command = args.shift().toLowerCase();
 
@@ -33,18 +33,17 @@ function OnClientMessage(bot, msg)
 			var cmd = Commands.commands[i];
 			if(!cmd.call(bot, msg, args))
 			{
-				return msg.reply(`Invalid arguments.\nUsage: ${cmd.getUsage()}`);
+				return msg.channel.send(`${msg.author}\nInvalid arguments.\nUsage: ${cmd.getUsage()}`);
 			}
 		}
-			
+
 	}
-	
+
 	console.log(args);
 }
 
-module.exports = 
+module.exports =
 {
 	OnBotReady: OnBotReady,
 	OnClientMessage: OnClientMessage
 };
-
