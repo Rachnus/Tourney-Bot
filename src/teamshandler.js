@@ -1,6 +1,6 @@
 var Team = require('./team.js');
 
-g_Teams = [];
+g_Teams = new Map();
 
 /**
  * Creates a new team
@@ -25,12 +25,12 @@ function AddTeam(team)
 	if(TeamExists(team.getName()))
 		return null;
 
-	g_Teams.push(team);
+	g_Teams.set(team.getName(), team);
 	return team;
 }
 
 /**
- * Removes a team from the teams list
+ * Removes a team from the teams map
  * Returns true if a team with the name passed as argument was removed
  *
  * @param team_name      team name
@@ -38,33 +38,18 @@ function AddTeam(team)
  */
 function RemoveTeam(team_name)
 {
-	var ret = false;
-	for(var i = 0; i < g_Teams.length; i++)
-	{
-		if(g_Teams[i].getName() === team_name)
-		{
-			g_Teams[i].disband();
-			g_Teams.splice(i, 1);
-			ret = true;
-		}
-	}
-	return ret;
+	return g_Teams.delete(team_name);
 }
 
 /**
- * Gets a team from teams list by name
+ * Gets a team from teams map by name
  *
  * @param team_name      team name
  * @return Team
  */
 function FindTeam(team_name)
 {
-	for(var i = 0; i < g_Teams.length; i++)
-	{
-		if(g_Teams[i].getName() === team_name)
-			return g_Teams[i];
-	}
-	return null;
+	return g_Teams.get(team_name);
 }
 
 /**
@@ -75,12 +60,7 @@ function FindTeam(team_name)
  */
 function TeamExists(team_name)
 {
-	for(var i = 0; i < g_Teams.length; i++)
-	{
-		if(g_Teams[i].getName() === team_name)
-			return true;
-	}
-	return false;
+	return g_Teams.has(team_name);
 }
 
 

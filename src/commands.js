@@ -234,16 +234,19 @@ function CmdTeamList(bot, msg, command, args)
 		return false;
 	}
 	var teamlistString = "\n(Player Count) Team Name - Rank - Owner:```\n"
-	for(var i = 0; i < TeamsHandler.teams.length; i++)
+
+	TeamsHandler.teams.forEach(
+	function(value, key, map)
 	{
-		teamlistString += '(' + TeamsHandler.teams[i].getPlayerCount() + '/' + Role.ROLES.MAX_ROLES + ') ' +
-		                  TeamsHandler.teams[i].getName() +
+		teamlistString += '(' + value.getPlayerCount() + '/' + Role.ROLES.MAX_ROLES + ') ' +
+		                  value.getName() +
 		                  ' - ' +
-						  TeamsHandler.teams[i].getTier().toUpperCase() +
+						  value.getTier().toUpperCase() +
 						  ' - ' +
-						  Player.GetGlobalPlayerByPID(TeamsHandler.teams[i].getOwner()).getDiscordUser().username +
+						  Player.GetGlobalPlayerByPID(value.getOwner()).getDiscordUser().username +
 						  `\n`;
-	}
+	});
+
 	teamlistString += "```";
 
 	msg.channel.send(`${msg.author}\n${teamlistString}`);
